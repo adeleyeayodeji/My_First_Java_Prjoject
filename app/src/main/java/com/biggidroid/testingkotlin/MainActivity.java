@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         String feetString = feetText.getText().toString();
         String inchesString = inchesText.getText().toString();
 
-       //set text
+       //set text to resultText
         resultText.setText("Age: " + ageString + ", Weight: " + weightString + ", Feet: " + feetString + ", Inches: " + inchesString);
     }
 }
