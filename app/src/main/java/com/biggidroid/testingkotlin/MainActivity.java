@@ -10,6 +10,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
+
 public class MainActivity extends AppCompatActivity {
     private Button calculateButton;
     private TextView resultText;
@@ -56,9 +58,45 @@ public class MainActivity extends AppCompatActivity {
         calculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calculateBmi();
+                double bmiResult = calculateBmi();
+                //get age
+                String ageString = ageText.getText().toString();
+                //parse age
+                int age = Integer.parseInt(ageString);
+
+                //check if age is greater than 18
+                if (age >= 18) {
+                    //display result
+                    displayResult(bmiResult);
+                }else{
+                    displayGuidance(bmiResult);
+                }
             }
         });
+    }
+
+    /**
+     * Display guidance
+     * @param bmi double
+     */
+    private void displayGuidance(double bmi) {
+        DecimalFormat myDecimalFormatter = new DecimalFormat("0.00");
+        String bmiString = myDecimalFormatter.format(bmi);
+
+        String fullResultString;
+
+        if(maleButton.isChecked()){
+            //Display boy guidance
+            fullResultString = bmiString + " - You are under 18, and you need to see a doctor for healthy range for boys";
+        } else if (femaleButton.isChecked()){
+            //Display girl guidance
+            fullResultString = bmiString + " - You are under 18, and you need to see a doctor for healthy range for girls";
+        } else {
+            //Display generic guidance
+            fullResultString = bmiString + " - You are under 18, and you need to see a doctor for healthy range";
+        }
+
+        resultText.setText(fullResultString);
     }
 
     /**
@@ -66,19 +104,13 @@ public class MainActivity extends AppCompatActivity {
      *
      * @return void
      */
-    private void calculateBmi() {
-        String ageString = ageText.getText().toString();
+    private double calculateBmi() {
+        // Get user values from the widget references
         String weightString = weightText.getText().toString();
         String feetString = feetText.getText().toString();
         String inchesString = inchesText.getText().toString();
 
-        if (ageString.isEmpty() || weightString.isEmpty() || feetString.isEmpty() || inchesString.isEmpty()) {
-            Toast.makeText(this, "Please enter all the information", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         // Convert string to number
-        int age = Integer.parseInt(ageString);
         int weight = Integer.parseInt(weightString);
         int feet = Integer.parseInt(feetString);
         int inches = Integer.parseInt(inchesString);
@@ -87,12 +119,31 @@ public class MainActivity extends AppCompatActivity {
         double totalInches = (feet * 12) + inches;
         double heightInMeters = totalInches * 0.0254;
 
-        double bmi = weight / (heightInMeters * heightInMeters);
+        return weight / (heightInMeters * heightInMeters);
+    }
 
-        //bmi text
-        String bmiText = String.valueOf(bmi);
+    /**
+     * Display result
+     *
+     * @param bmi double
+     */
+    private void displayResult(double bmi) {
+        DecimalFormat myDecimalFormatter = new DecimalFormat("0.00");
+        String bmiString = myDecimalFormatter.format(bmi);
 
-        //display result
-        resultText.setText(bmiText);
+        String fullResultString;
+
+        if (bmi < 18.5) {
+            // The user is underweight
+            fullResultString = bmiString + " - You are underweight";
+        } else if (bmi > 25) {
+            // The user is overweight
+            fullResultString = bmiString + " - You are overweight";
+        } else {
+            // The user is healthy
+            fullResultString = bmiString + " - You are healthy";
+        }
+
+        resultText.setText(fullResultString);
     }
 }
