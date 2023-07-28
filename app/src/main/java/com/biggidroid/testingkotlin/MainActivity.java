@@ -72,7 +72,27 @@ public class MainActivity extends AppCompatActivity {
         String feetString = feetText.getText().toString();
         String inchesString = inchesText.getText().toString();
 
-       //set text to resultText
-        resultText.setText("Age: " + ageString + ", Weight: " + weightString + ", Feet: " + feetString + ", Inches: " + inchesString);
+        if (ageString.isEmpty() || weightString.isEmpty() || feetString.isEmpty() || inchesString.isEmpty()) {
+            Toast.makeText(this, "Please enter all the information", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Convert string to number
+        int age = Integer.parseInt(ageString);
+        int weight = Integer.parseInt(weightString);
+        int feet = Integer.parseInt(feetString);
+        int inches = Integer.parseInt(inchesString);
+
+        // Calculate BMI
+        double totalInches = (feet * 12) + inches;
+        double heightInMeters = totalInches * 0.0254;
+
+        double bmi = weight / (heightInMeters * heightInMeters);
+
+        //bmi text
+        String bmiText = String.valueOf(bmi);
+
+        //display result
+        resultText.setText(bmiText);
     }
 }
